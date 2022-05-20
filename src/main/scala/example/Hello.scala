@@ -27,6 +27,7 @@ object Hello extends Greeting with App {
     _       <- getAllRowsIO(session)
     _       <- getByPkIO(session)
     _       <- getCountIO(session)
+    _       <- getByQueryIO(session)
     _       <- cleanupSession
   } yield ()
 
@@ -62,6 +63,15 @@ object Hello extends Greeting with App {
       count <- playerRepo.getCount(session)
       _     <- IO(println(s"count: ${count}"))
     } yield count
+  }
+
+  def getByQueryIO(session: CqlSession): IO[Seq[Map[String, Any]]] = {
+    val query = "select * from players where city = 'Ajmer'"
+    for {
+      rowsByQueryTV <- playerRepo.getByQuery(query)(session)
+      rowsByQuery    = rowsByQueryTV.map(_.toNameValueMap)
+      _             <- IO(println(s"rows by query: ${rowsByQuery}"))
+    } yield rowsByQuery
   }
 
   def getSession: IO[CqlSession] = {

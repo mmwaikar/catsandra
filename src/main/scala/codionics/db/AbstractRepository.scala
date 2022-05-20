@@ -7,6 +7,8 @@ import scala.jdk.FutureConverters._
 
 abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
 
+  protected val ALLOW_FILTERING: String = "ALLOW FILTERING"
+
   override def getAll: Kleisli[IO, CqlSession, Seq[Map[String, TypeVal]]] =
     for {
       session <- Kleisli.ask[IO, CqlSession]
@@ -30,7 +32,15 @@ abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
       _        = println(s"rowMap: $rowMap")
     } yield rowMap.getOrElse("count", TypeVal.DEFAULT_LONG).value.asInstanceOf[Long]
 
-  override def getByQuery(query: String): Kleisli[IO, CqlSession, Seq[Map[String, TypeVal]]] = ???
+  override def getByQuery(query: String): Kleisli[IO, CqlSession, Seq[Map[String, TypeVal]]] = {
+    val updatedQuery = if (query.toUpperCase().contains(ALLOW_FILTERING)) query else s"$query $ALLOW_FILTERING"
+
+    for {
+      session <- Kleisli.ask[IO, CqlSession]
+      result   = session.execute(updatedQuery)
+      rowsMap  = getRows(result)
+    } yield rowsMap
+  }
 
   override def insert(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = ???
 
