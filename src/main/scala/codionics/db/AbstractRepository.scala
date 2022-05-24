@@ -50,6 +50,7 @@ abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
       session <- Kleisli.ask[IO, CqlSession]
       result   = session.execute(insertQuery.toString)
       rowsMap  = getRows(result)
+      _        = println(s"insert rowsMap: $rowsMap")
     } yield rowsMap.headOption
   }
 

@@ -12,6 +12,7 @@ import codionics.db.PlayerRepository
 import codionics.db.TypeValUtils._
 import cats.effect.Ref
 import com.datastax.oss.driver.api.core.CqlSession
+import cats.effect.kernel.Resource
 
 object Hello extends Greeting with App {
   println(greeting)
@@ -19,21 +20,21 @@ object Hello extends Greeting with App {
   // val config = new ConfigReaderImpl().load().unsafeRunSync()
   // println(s"config: $config")
 
-  val playerRepo = new PlayerRepository()
-  val sessionIO  = getSession
+  val playerRepo      = new PlayerRepository()
+  val sessionResource = Resource.make(getSession)(_ => cleanupSession)
 
-  val program = for {
-    session <- sessionIO
-    _       <- getAllRowsIO(session)
-    _       <- getByPkIO(session)
-    _       <- getCountIO(session)
-    _       <- getByQueryIO(session)
-    _       <- insertIO(session)
-    // _       <- deleteByPkIO(session)
-    _       <- cleanupSession
-  } yield ()
+  sessionResource.use(getProgram).unsafeRunSync()
 
-  program.unsafeRunSync()
+  def getProgram(session: CqlSession): IO[Unit] = {
+    for {
+      _ <- getAllRowsIO(session)
+      _ <- getByPkIO(session)
+      _ <- getCountIO(session)
+      _ <- getByQueryIO(session)
+      _ <- insertIO(session)
+      _ <- deleteByPkIO(session)
+    } yield ()
+  }
 
   def getAllRowsIO(session: CqlSession): IO[Seq[Map[String, Any]]] = {
     for {
