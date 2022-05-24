@@ -28,18 +28,11 @@ object Hello extends Greeting with App {
     _       <- getByPkIO(session)
     _       <- getCountIO(session)
     _       <- getByQueryIO(session)
+    _       <- insertIO(session)
+    // _       <- deleteByPkIO(session)
     _       <- cleanupSession
   } yield ()
 
-  // val allRowsIO = getAllRowsIO(sessionIO)
-  // val byPkRowIO = getByPkIO(sessionIO)
-  // val countIO   = getCountIO(sessionIO)
-
-  // allRowsIO.unsafeRunSync()
-  // byPkRowIO.unsafeRunSync()
-  // countIO.unsafeRunSync()
-
-  // cleanupSession.unsafeRunSync()
   program.unsafeRunSync()
 
   def getAllRowsIO(session: CqlSession): IO[Seq[Map[String, Any]]] = {
@@ -72,6 +65,29 @@ object Hello extends Greeting with App {
       rowsByQuery    = rowsByQueryTV.map(_.toNameValueMap)
       _             <- IO(println(s"rows by query: ${rowsByQuery}"))
     } yield rowsByQuery
+  }
+
+  def deleteByPkIO(session: CqlSession): IO[Unit] = {
+    for {
+      _ <- playerRepo.delete("chintu1")(session)
+    } yield ()
+  }
+
+  def insertIO(session: CqlSession): IO[Option[Map[String, Any]]] = {
+    val data = Map(
+      "nickname"   -> "chintu1",
+      "first_name" -> "Rishi1",
+      "last_name"  -> "Kapoor1",
+      "city"       -> "Jodhpur1",
+      "country"    -> "India1",
+      "zip"        -> "305002"
+    )
+
+    for {
+      insertedRowTV <- playerRepo.insert(data)(session)
+      singleRow      = insertedRowTV.map(_.toNameValueMap)
+      _             <- IO(println(s"inserted row: ${singleRow}"))
+    } yield singleRow
   }
 
   def getSession: IO[CqlSession] = {

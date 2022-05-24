@@ -12,7 +12,7 @@ abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
   override def getAll: Kleisli[IO, CqlSession, Seq[Map[String, TypeVal]]] =
     for {
       session <- Kleisli.ask[IO, CqlSession]
-      result   = session.execute(selectQuery)
+      result   = session.execute(selectAllQuery)
       rowsMap  = getRows(result)
     } yield rowsMap
 
@@ -42,9 +42,27 @@ abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
     } yield rowsMap
   }
 
-  override def insert(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = ???
+  override def insert(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = {
+    val insertQuery = getInsertQuery(data)
+    println(s"insertQuery: ${insertQuery.toString()}")
+
+    for {
+      session <- Kleisli.ask[IO, CqlSession]
+      result   = session.execute(insertQuery.toString)
+      rowsMap  = getRows(result)
+    } yield rowsMap.headOption
+  }
 
   override def update(id: String, data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = ???
 
-  override def delete(id: String): Kleisli[IO, CqlSession, Unit] = ???
+  override def delete(pk: TPK): Kleisli[IO, CqlSession, Unit] = {
+    for {
+      session  <- Kleisli.ask[IO, CqlSession]
+      statement = session.prepare(deleteQuery)
+      result    = session.execute(statement.bind(pk))
+      rowsMap   = getRows(result)
+    } yield {
+      println(s"deleted rows: $rowsMap")
+    }
+  }
 }
