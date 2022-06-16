@@ -54,7 +54,17 @@ abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
     } yield rowsMap.headOption
   }
 
-  override def update(id: String, data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = ???
+  override def update(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = {
+    val updateQuery = getUpdateQuery(data)
+    println(s"updateQuery: ${updateQuery.toString()}")
+
+    for {
+      session <- Kleisli.ask[IO, CqlSession]
+      result   = session.execute(updateQuery.toString())
+      rowsMap  = getRows(result)
+      _        = println(s"update rowsMap: $rowsMap")
+    } yield rowsMap.headOption
+  }
 
   override def delete(pk: TPK): Kleisli[IO, CqlSession, Unit] = {
     for {

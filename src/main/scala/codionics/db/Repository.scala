@@ -16,6 +16,9 @@ import com.datastax.oss.driver.api.querybuilder.select.Select
 import com.datastax.oss.driver.api.querybuilder.insert.InsertInto
 import com.datastax.oss.driver.api.querybuilder.term.Term
 import com.datastax.oss.driver.api.querybuilder.insert.RegularInsert
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder
+import com.datastax.oss.driver.api.querybuilder.update.Assignment
+import com.datastax.oss.driver.api.querybuilder.update.Update
 
 case class TypeVal(dataType: String, value: Any) {
 
@@ -46,7 +49,7 @@ trait Repository[T, TPK] {
 
   def insert(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]]
 
-  def update(id: String, data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]]
+  def update(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]]
 
   def delete(pk: TPK): Kleisli[IO, CqlSession, Unit]
 
@@ -79,7 +82,22 @@ trait Repository[T, TPK] {
     withPK.valuesByIds(cqlMap.asJava)
   }
 
-  protected def deleteQuery = deleteFrom(tableName).whereColumn(pkColumnName).isEqualTo(bindMarker()).build()
+  protected def getUpdateQuery(data: Map[String, Any]): Update = {
+    val updateMap =
+      if (data.contains(pkColumnName)) data - pkColumnName
+      else data
+
+    var updateStmt = QueryBuilder.update(CqlIdentifier.fromInternal(tableName))
+
+    val updateAssignmnts = updateMap.map { case (k, v) => Assignment.setColumn(k, literal(v)) }.asJava
+    var withAssignments  = updateStmt.set(updateAssignmnts)
+
+    val pkColValue = data.get(pkColumnName)
+    withAssignments.whereColumn(pkColumnName).isEqualTo(literal(pkColValue.get))
+  }
+
+  protected def deleteQuery: SimpleStatement =
+    deleteFrom(tableName).whereColumn(pkColumnName).isEqualTo(bindMarker()).build()
 
   def getRow(rs: ResultSet): Map[String, TypeVal] = {
     val columns = rs.getColumnDefinitions.asScala.map(_.getName)

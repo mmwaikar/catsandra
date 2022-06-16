@@ -32,6 +32,7 @@ object Hello extends Greeting with App {
       _ <- getCountIO(session)
       _ <- getByQueryIO(session)
       _ <- insertIO(session)
+      _ <- updateIO(session)
       _ <- deleteByPkIO(session)
     } yield ()
   }
@@ -88,6 +89,23 @@ object Hello extends Greeting with App {
       insertedRowTV <- playerRepo.insert(data)(session)
       singleRow      = insertedRowTV.map(_.toNameValueMap)
       _             <- IO(println(s"inserted row: ${singleRow}"))
+    } yield singleRow
+  }
+
+  def updateIO(session: CqlSession): IO[Option[Map[String, Any]]] = {
+    val data = Map(
+      "nickname"   -> "chintu1",
+      "first_name" -> "Rishi2",
+      "last_name"  -> "Kapoor2",
+      "city"       -> "Jodhpur2",
+      "country"    -> "India2",
+      "zip"        -> "305003"
+    )
+
+    for {
+      updatedRowTV <- playerRepo.update(data)(session)
+      singleRow     = updatedRowTV.map(_.toNameValueMap)
+      _            <- IO(println(s"updated row: ${singleRow}"))
     } yield singleRow
   }
 
