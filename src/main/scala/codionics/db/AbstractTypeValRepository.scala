@@ -6,7 +6,7 @@ import com.datastax.oss.driver.api.core.CqlSession
 import scala.jdk.FutureConverters._
 import codionics.domain._
 
-abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
+abstract class AbstractTypeValRepository[TPK] extends TypeValRepository[TPK] {
 
   protected val ALLOW_FILTERING: String = "ALLOW FILTERING"
 

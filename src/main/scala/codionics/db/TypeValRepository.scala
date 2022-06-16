@@ -21,7 +21,7 @@ import com.datastax.oss.driver.api.querybuilder.update.Assignment
 import com.datastax.oss.driver.api.querybuilder.update.Update
 import codionics.domain._
 
-trait Repository[T, TPK] {
+trait TypeValRepository[TPK] {
 
   // def keyspace: String
 
