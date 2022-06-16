@@ -19,15 +19,7 @@ import com.datastax.oss.driver.api.querybuilder.insert.RegularInsert
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder
 import com.datastax.oss.driver.api.querybuilder.update.Assignment
 import com.datastax.oss.driver.api.querybuilder.update.Update
-
-case class TypeVal(dataType: String, value: Any) {
-
-  def toValueString: String = value.toString()
-}
-
-object TypeVal {
-  val DEFAULT_LONG = TypeVal("Long", 0L)
-}
+import codionics.domain._
 
 trait Repository[T, TPK] {
 

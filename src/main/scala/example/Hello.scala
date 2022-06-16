@@ -28,12 +28,16 @@ object Hello extends Greeting with App {
   def getProgram(session: CqlSession): IO[Unit] = {
     for {
       _ <- getAllRowsIO(session)
-      _ <- getByPkIO(session)
+      _ <- getByPkIO(session, "fedex")
       _ <- getCountIO(session)
       _ <- getByQueryIO(session)
       _ <- insertIO(session)
+      _ <- getCountIO(session)
+      _ <- getByPkIO(session, "chintu1")
       _ <- updateIO(session)
-      _ <- deleteByPkIO(session)
+      _ <- getByPkIO(session, "chintu1")
+      _ <- deleteByPkIO(session, "chintu1")
+      _ <- getCountIO(session)
     } yield ()
   }
 
@@ -42,14 +46,16 @@ object Hello extends Greeting with App {
       allRowsTV <- playerRepo.getAll(session)
       allRows    = allRowsTV.map(_.toNameValueMap)
       _         <- IO(println(s"all rows: ${allRows}"))
+      _         <- IO(println(s"-----------------------------"))
     } yield allRows
   }
 
-  def getByPkIO(session: CqlSession): IO[Option[Map[String, Any]]] = {
+  def getByPkIO(session: CqlSession, pkValue: String): IO[Option[Map[String, Any]]] = {
     for {
-      byPkRowTV <- playerRepo.getByPK("fedex")(session)
+      byPkRowTV <- playerRepo.getByPK(pkValue)(session)
       singleRow  = byPkRowTV.map(_.toNameValueMap)
       _         <- IO(println(s"single row: ${singleRow}"))
+      _         <- IO(println(s"-----------------------------"))
     } yield singleRow
   }
 
@@ -57,6 +63,7 @@ object Hello extends Greeting with App {
     for {
       count <- playerRepo.getCount(session)
       _     <- IO(println(s"count: ${count}"))
+      _     <- IO(println(s"-----------------------------"))
     } yield count
   }
 
@@ -66,12 +73,13 @@ object Hello extends Greeting with App {
       rowsByQueryTV <- playerRepo.getByQuery(query)(session)
       rowsByQuery    = rowsByQueryTV.map(_.toNameValueMap)
       _             <- IO(println(s"rows by query: ${rowsByQuery}"))
+      _             <- IO(println(s"-----------------------------"))
     } yield rowsByQuery
   }
 
-  def deleteByPkIO(session: CqlSession): IO[Unit] = {
+  def deleteByPkIO(session: CqlSession, pkValue: String): IO[Unit] = {
     for {
-      _ <- playerRepo.delete("chintu1")(session)
+      _ <- playerRepo.delete(pkValue)(session)
     } yield ()
   }
 
@@ -89,6 +97,7 @@ object Hello extends Greeting with App {
       insertedRowTV <- playerRepo.insert(data)(session)
       singleRow      = insertedRowTV.map(_.toNameValueMap)
       _             <- IO(println(s"inserted row: ${singleRow}"))
+      _             <- IO(println(s"-----------------------------"))
     } yield singleRow
   }
 
@@ -106,6 +115,7 @@ object Hello extends Greeting with App {
       updatedRowTV <- playerRepo.update(data)(session)
       singleRow     = updatedRowTV.map(_.toNameValueMap)
       _            <- IO(println(s"updated row: ${singleRow}"))
+      _            <- IO(println(s"-----------------------------"))
     } yield singleRow
   }
 

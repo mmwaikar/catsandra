@@ -4,6 +4,7 @@ import cats.data.Kleisli
 import cats.effect.IO
 import com.datastax.oss.driver.api.core.CqlSession
 import scala.jdk.FutureConverters._
+import codionics.domain._
 
 abstract class AbstractRepository[T, TPK] extends Repository[T, TPK] {
 
