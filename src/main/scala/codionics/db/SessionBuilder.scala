@@ -10,12 +10,8 @@ import java.net.InetSocketAddress
 object SessionBuilder {
   val refSession: Ref[IO, Option[CqlSession]] = Ref.unsafe[IO, Option[CqlSession]](None)
 
-  def sessionIsDefined: IO[Boolean] = {
-    for {
-      session <- refSession.get
-    } yield session.isDefined
-  }
-
+  /** Creates a new Casandra session if it does not exists, else returns the already created one.
+    */
   def getSession(): Kleisli[IO, Config, Ref[IO, Option[CqlSession]]] = {
     Kleisli { config =>
       for {
@@ -31,6 +27,8 @@ object SessionBuilder {
     }
   }
 
+  /** Closes the only Cassandra session.
+    */
   def cleanupSession() = {
     for {
       session <- refSession.get
@@ -55,12 +53,9 @@ object SessionBuilder {
     }
   }
 
-  // private def stop() = {
-  //   for {
-  //     session <- refSession.get
-  //     _ = session.map(_.close())
-  //   } yield ()
-
-  //   println("Closed Cassandra session and cluster.")
-  // }
+  private def sessionIsDefined: IO[Boolean] = {
+    for {
+      session <- refSession.get
+    } yield session.isDefined
+  }
 }

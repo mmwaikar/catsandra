@@ -13,6 +13,7 @@ import codionics.db.TypeValUtils._
 import cats.effect.Ref
 import com.datastax.oss.driver.api.core.CqlSession
 import cats.effect.kernel.Resource
+import codionics.db.SessionResource
 
 object Hello extends Greeting with App {
   println(greeting)
@@ -21,7 +22,7 @@ object Hello extends Greeting with App {
   // println(s"config: $config")
 
   val playerRepo      = new PlayerRepository()
-  val sessionResource = Resource.make(getSession)(_ => cleanupSession)
+  val sessionResource = SessionResource.cqlSessionResource
 
   sessionResource.use(getProgram).unsafeRunSync()
 
@@ -117,21 +118,6 @@ object Hello extends Greeting with App {
       _            <- IO(println(s"updated row: ${singleRow}"))
       _            <- IO(println(s"-----------------------------"))
     } yield singleRow
-  }
-
-  def getSession: IO[CqlSession] = {
-    for {
-      config       <- new ConfigReaderImpl().load()
-      sessionRef   <- SessionBuilder.getSession().run(config)
-      maybeSession <- sessionRef.get
-    } yield maybeSession.get
-  }
-
-  def cleanupSession: IO[Unit] = {
-    for {
-      _ <- IO(println("cleaning up session"))
-      _ <- SessionBuilder.cleanupSession()
-    } yield ()
   }
 }
 

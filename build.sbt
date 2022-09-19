@@ -15,8 +15,12 @@ lazy val root = (project in file("."))
       pureConfigCatsEffect,
       cassandraDriver,
       cassandraQueryBuilder,
-      scalaTest % Test
+      scalaTest         % Test,
+      catsEffectTesting % Test,
+      weaverCats        % Test
     )
   )
+
+testFrameworks += new TestFramework("weaver.framework.CatsEffect")
 
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
