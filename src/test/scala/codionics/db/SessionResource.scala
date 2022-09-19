@@ -7,17 +7,12 @@ import codionics.db.SessionBuilder
 import com.datastax.oss.driver.api.core.CqlSession
 import weaver._
 
-case class SessionHolder(cqlSessionResource: Resource[IO, CqlSession])
-
 object SessionResource extends GlobalResource {
-
-  // val xx: Resource[IO, String] = Resource.pure[IO, String]("hello world!")
 
   def sharedResources(global: GlobalWrite): Resource[IO, Unit] =
     for {
-      // foo <- Resource.pure[IO, String]("hello world!")
-      _ <- global.putR(SessionHolder(cqlSessionResource))
-      // _ <- global.putR(cqlSessionResource)
+      cqlSessionResource <- Resource.make(getSession)(_ => cleanupSession)
+      _                  <- global.putR(cqlSessionResource)
     } yield ()
 
   def cqlSessionResource: Resource[IO, CqlSession] = Resource.make(getSession)(_ => cleanupSession)
