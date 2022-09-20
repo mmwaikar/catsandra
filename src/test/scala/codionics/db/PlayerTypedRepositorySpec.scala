@@ -17,7 +17,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
 
   val playerRepo = new PlayerTypedRepository()
 
-  test("PlayerRepository getAll method") { (session, log) =>
+  test("PlayerTypedRepository getAll method") { (session, log) =>
     for {
       _       <- log.info(s"test getAll")
       players <- playerRepo.getAll(session)
@@ -25,7 +25,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
     } yield expect(players.size == 6)
   }
 
-  test("PlayerRepository getByPK method") { (session, log) =>
+  test("PlayerTypedRepository getByPK method") { (session, log) =>
     for {
       _      <- log.info(s"test getByPK")
       player <- playerRepo.getByPK(nicknamePK)(session)
@@ -33,7 +33,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
     } yield expect(player.getOrElse(Player.NULL_OBJECT).nickName == nicknamePK)
   }
 
-  test("PlayerRepository getCount method") { (session, log) =>
+  test("PlayerTypedRepository getCount method") { (session, log) =>
     for {
       _     <- log.info(s"test getCount")
       count <- playerRepo.getCount(session)
@@ -41,7 +41,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
     } yield expect(count == 6)
   }
 
-  test("PlayerRepository getByQuery method") { (session, log) =>
+  test("PlayerTypedRepository getByQuery method") { (session, log) =>
     val query = s"select * from players where city = '${city}'"
 
     for {
@@ -52,7 +52,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
     } yield expect(player.city == city)
   }
 
-  test("PlayerRepository insert method") { (session, log) =>
+  test("PlayerTypedRepository insert method") { (session, log) =>
     val data = Player("Rishi1", "Kapoor1", newNicknamePK, "Jodhpur1", "India1", "305002")
 
     for {
@@ -63,7 +63,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
     } yield expect(inserted.getOrElse(Player.NULL_OBJECT).city == city)
   }
 
-  test("PlayerRepository update method") { (session, log) =>
+  test("PlayerTypedRepository update method") { (session, log) =>
     val data = Player("Rishi2", "Kapoor2", newNicknamePK, updatedCity, "India2", "305003")
 
     for {
@@ -73,7 +73,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
     } yield expect(updated.getOrElse(Player.NULL_OBJECT).city == updatedCity)
   }
 
-  test("PlayerRepository delete method") { (session, log) =>
+  test("PlayerTypedRepository delete method") { (session, log) =>
     val nickname = "chintu1"
 
     for {

@@ -1,20 +1,20 @@
-package codionics.db
+// package codionics.db
 
-import codionics.BaseSpec
+// import codionics.BaseSpec
 
-import codionics.config._
-import cats.effect.{IO, IOApp, Sync}
-import scala.io.StdIn
-import cats.effect.unsafe.implicits._
-import cats.effect.ExitCode
-import codionics.db.SessionBuilder
-import cats.syntax.all._
-import cats.effect.unsafe.implicits._
-import codionics.db.PlayerTypeValRepository
-import codionics.db.TypeValUtils._
-import cats.effect.Ref
-import com.datastax.oss.driver.api.core.CqlSession
-import cats.effect.kernel.Resource
+// import codionics.config._
+// import cats.effect.{IO, IOApp, Sync}
+// import scala.io.StdIn
+// import cats.effect.unsafe.implicits._
+// import cats.effect.ExitCode
+// import codionics.db.SessionBuilder
+// import cats.syntax.all._
+// import cats.effect.unsafe.implicits._
+// import codionics.db.PlayerTypeValRepository
+// import codionics.db.TypeValUtils._
+// import cats.effect.Ref
+// import com.datastax.oss.driver.api.core.CqlSession
+// import cats.effect.kernel.Resource
 
 // class PlayerRepositorySpec extends BaseSpec {
 
