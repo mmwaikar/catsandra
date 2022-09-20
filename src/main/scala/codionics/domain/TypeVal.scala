@@ -6,5 +6,7 @@ case class TypeVal(dataType: String, value: Any) {
 }
 
 object TypeVal {
-  val DEFAULT_LONG = TypeVal("Long", 0L)
+  val DEFAULT_INT    = TypeVal("Int", 0)
+  val DEFAULT_LONG   = TypeVal("Long", 0L)
+  val DEFAULT_STRING = TypeVal("String", "")
 }
