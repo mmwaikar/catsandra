@@ -10,7 +10,7 @@ import cats.effect.ExitCode
 import codionics.db.SessionBuilder
 import cats.syntax.all._
 import cats.effect.unsafe.implicits._
-import codionics.db.PlayerRepository
+import codionics.db.PlayerTypeValRepository
 import codionics.db.TypeValUtils._
 import cats.effect.Ref
 import com.datastax.oss.driver.api.core.CqlSession
