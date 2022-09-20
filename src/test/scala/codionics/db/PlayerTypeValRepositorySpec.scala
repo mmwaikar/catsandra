@@ -15,7 +15,7 @@ class PlayerTypeValRepositorySpec(global: GlobalRead) extends IOSuite {
   val newNicknamePK = "chintu1"
   val updatedCity   = "Jodhpur2"
 
-  val playerRepo = new PlayerRepository()
+  val playerRepo = new PlayerTypeValRepository()
 
   test("PlayerRepository getAll method") { (session, log) =>
     for {

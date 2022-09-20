@@ -8,7 +8,7 @@ import cats.effect.ExitCode
 import codionics.db.SessionBuilder
 import cats.syntax.all._
 import cats.effect.unsafe.implicits._
-import codionics.db.PlayerRepository
+import codionics.db.PlayerTypeValRepository
 import codionics.db.TypeValUtils._
 import cats.effect.Ref
 import com.datastax.oss.driver.api.core.CqlSession
@@ -20,7 +20,7 @@ object Hello extends App {
   // val config = new ConfigReaderImpl().load().unsafeRunSync()
   // println(s"config: $config")
 
-  val playerRepo      = new PlayerRepository()
+  val playerRepo      = new PlayerTypeValRepository()
   val sessionResource = SessionResource.cqlSessionResource
 
   sessionResource.use(getProgram).unsafeRunSync()
