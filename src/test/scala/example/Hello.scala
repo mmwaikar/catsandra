@@ -15,8 +15,7 @@ import com.datastax.oss.driver.api.core.CqlSession
 import cats.effect.kernel.Resource
 import codionics.db.SessionResource
 
-object Hello extends Greeting with App {
-  println(greeting)
+object Hello extends App {
 
   // val config = new ConfigReaderImpl().load().unsafeRunSync()
   // println(s"config: $config")
@@ -119,8 +118,4 @@ object Hello extends Greeting with App {
       _            <- IO(println(s"-----------------------------"))
     } yield singleRow
   }
-}
-
-trait Greeting {
-  lazy val greeting: String = "hello"
 }
