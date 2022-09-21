@@ -7,7 +7,7 @@ import scala.jdk.CollectionConverters._
 
 trait ResultSetHelper {
 
-  def getRow(rs: ResultSet): Map[String, Any] = {
+  protected def getRow(rs: ResultSet): Map[String, Any] = {
     if (rs == null) Map.empty
     else {
       val columns = rs.getColumnDefinitions.asScala.map(_.getName)
@@ -16,7 +16,7 @@ trait ResultSetHelper {
     }
   }
 
-  def getRows(rs: ResultSet): List[Map[String, Any]] = {
+  protected def getRows(rs: ResultSet): List[Map[String, Any]] = {
     if (rs == null) List.empty
     else {
       val columns = rs.getColumnDefinitions.asScala.map(_.getName)
@@ -24,7 +24,7 @@ trait ResultSetHelper {
     }
   }
 
-  def toNameValueMap(rs: ResultSet, row: Row): Map[String, Object] = {
+  protected def toNameValueMap(rs: ResultSet, row: Row): Map[String, Object] = {
     if (rs == null) Map.empty
     else {
       val columns = rs.getColumnDefinitions.asScala.map(_.getName)
