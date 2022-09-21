@@ -60,7 +60,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
       exists   <- playerRepo.getByPK(newNicknamePK)(session)
       inserted <- playerRepo.insert(data)(session)
       _        <- log.info(s"Inserted row: $inserted")
-    } yield expect(inserted.getOrElse(Player.NULL_OBJECT).city == city)
+    } yield expect(inserted == None)
   }
 
   test("PlayerTypedRepository update method") { (session, log) =>
@@ -70,7 +70,7 @@ class PlayerTypedRepositorySpec(global: GlobalRead) extends IOSuite {
       _       <- log.info(s"test update")
       updated <- playerRepo.update(data)(session)
       _       <- log.info(s"Updated row: $updated")
-    } yield expect(updated.getOrElse(Player.NULL_OBJECT).city == updatedCity)
+    } yield expect(updated == None)
   }
 
   test("PlayerTypedRepository delete method") { (session, log) =>

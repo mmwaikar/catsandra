@@ -52,7 +52,7 @@ which extends -
 
  where `TPK` denotes the type of the partition key, and `T <: Product` denotes your case class.
 
- > **Note:** Every case class extends a Product.
+ > Note: Every case class extends a Product.
  
  Then, you just have to override three fields -
   - `tableName` which denotes the name of the table

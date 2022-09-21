@@ -51,9 +51,9 @@ abstract class AbstractGenericTypeValRepository[TPK] extends GenericTypeValRepos
     for {
       session <- Kleisli.ask[IO, CqlSession]
       result   = session.execute(insertQuery.toString)
-      rowsMap  = getRows(result)
-      _        = println(s"insert rowsMap: $rowsMap")
-    } yield rowsMap.headOption
+      rowMap   = getRow(result)
+      _        = println(s"insert rowMap: $rowMap")
+    } yield if (rowMap.isEmpty) None else Some(rowMap)
   }
 
   override def update(data: Map[String, Any]): Kleisli[IO, CqlSession, Option[Map[String, TypeVal]]] = {
@@ -63,9 +63,9 @@ abstract class AbstractGenericTypeValRepository[TPK] extends GenericTypeValRepos
     for {
       session <- Kleisli.ask[IO, CqlSession]
       result   = session.execute(updateQuery.toString())
-      rowsMap  = getRows(result)
-      _        = println(s"update rowsMap: $rowsMap")
-    } yield rowsMap.headOption
+      rowMap   = getRow(result)
+      _        = println(s"update rowMap: $rowMap")
+    } yield if (rowMap.isEmpty) None else Some(rowMap)
   }
 
   override def delete(pk: TPK): Kleisli[IO, CqlSession, Unit] = {
