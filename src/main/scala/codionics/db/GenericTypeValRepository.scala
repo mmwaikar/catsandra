@@ -22,7 +22,7 @@ import com.datastax.oss.driver.api.querybuilder.update.Update
 import scala.collection.mutable.Buffer
 import scala.jdk.CollectionConverters._
 
-trait TypeValRepository[TPK] {
+trait GenericTypeValRepository[TPK] {
 
   def tableName: String
 

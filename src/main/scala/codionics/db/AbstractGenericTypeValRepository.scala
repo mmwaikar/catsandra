@@ -7,7 +7,7 @@ import com.datastax.oss.driver.api.core.CqlSession
 
 import scala.jdk.FutureConverters._
 
-abstract class AbstractTypeValRepository[TPK] extends TypeValRepository[TPK] with QueryHelper {
+abstract class AbstractGenericTypeValRepository[TPK] extends GenericTypeValRepository[TPK] with QueryHelper {
 
   protected val ALLOW_FILTERING: String = "ALLOW FILTERING"
 

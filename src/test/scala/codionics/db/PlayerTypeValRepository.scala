@@ -1,6 +1,6 @@
 package codionics.db
 
-class PlayerTypeValRepository extends AbstractTypeValRepository[String] {
+class PlayerTypeValRepository extends AbstractGenericTypeValRepository[String] {
 
   override def tableName: String = "players"
 
